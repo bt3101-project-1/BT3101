@@ -59,7 +59,7 @@
           </div>
         </div>
         <div class="item">
-          <button class="ui button green" style="width: 100%;">
+          <button class="ui button green" style="width: 100%;" @click="generateCSV()">
             <i class="download icon"></i>
             Download CSV
           </button>
@@ -167,6 +167,40 @@ export default {
       this.selPhdInsts = {}
       this.selPromotionInsts = {}
       this.selRanks = {}
+    },
+    generateCSV: function () {
+      var csvContent = 'data:text/csv;charset=utf-8,'
+      var keys = ['universityId', 'facultyId', 'name', 'rank', 'phdYear', 'phdInstitution', 'promotionYear', 'promotionInstitution', 'researchInterests']
+      var headers = ['"University"', '"Faculty"', '"Name"', '"Academic Rank"', '"Year of Phd"', '"PhD Institution"', '"Research Interests"', '"Year of Promotion"', '"Promotion Institution"']
+      csvContent += headers.join(',') + '\n'
+      for (var i in this.professors) {
+        var p = this.professors[i]
+        var dataString = ''
+        keys.forEach(function (e) {
+          if (e in p) {
+            switch (e) {
+              case 'universityId':
+                dataString += '"' + this.universities[p[e]].name + '"' + ','
+                break
+              case 'facultyId':
+                dataString += '"' + this.faculties[p[e]].name + '"' + ','
+                break
+              default:
+                dataString += '"' + p[e] + '"' + ','
+                break
+            }
+          } else {
+            dataString += ','
+          }
+        }.bind(this))
+        csvContent += dataString + '\n'
+      }
+      var encodedUri = encodeURI(csvContent)
+      var link = document.createElement('a')
+      link.setAttribute('href', encodedUri)
+      link.setAttribute('download', 'test.csv')
+      document.body.appendChild(link)
+      link.click()
     }
   },
   computed: {
