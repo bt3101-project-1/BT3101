@@ -2,7 +2,7 @@ const HeadlessChrome = require('simple-headless-chrome')
 const config = require('./config.json')
 
 const browser = new HeadlessChrome({
-    headless: false // set to true for production; to false to view actual browser action
+    headless: false, // set to true for production; to false to view actual browser action
     launchChrome: false,
     chrome: {
       host: '115.66.242.122',
