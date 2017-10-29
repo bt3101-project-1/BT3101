@@ -3,6 +3,13 @@ const config = require('./config.json')
 
 const browser = new HeadlessChrome({
     headless: false // set to true for production; to false to view actual browser action
+    launchChrome: false,
+    chrome: {
+      host: '115.66.242.122',
+      port: 9222,
+      remote: true,
+    },
+    browserlog: true
 })
 function getInfo(name, uni, professor_id, request_id, original_status) {
     var result = {
@@ -109,4 +116,3 @@ var parser = parse({ delimiter: ',' }, async function (err, data) {
 
 // read the inputFile, feed the contents to the parser
 fs.createReadStream(inputFile).pipe(parser)
-
