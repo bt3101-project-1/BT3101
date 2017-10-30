@@ -3,9 +3,11 @@
     <div class="content header" :class="{selected: selected}">
       <!-- <a><i class="right floated remove icon"></i></a> -->
       <a @click="editProfessor"><i class="right floated pencil icon"></i></a>
+      <a><i class="right floated square icon" :class="{outline: !selected, check: selected}" @click="selectProf"></i></a>
       <div class="header">{{prof.name}}</div>
       <div class="meta" :class="{unknown: !prof.rank}">
-        {{prof.rank ? prof.rank : 'Unknown Academic Rank'}}
+        {{prof.rank ? prof.rank : 'Unknown Academic Rank'}} <br>
+        {{universities[prof.universityId].name}}
       </div>
     </div>
     <div class="content">
@@ -43,6 +45,14 @@ export default {
     },
     editProfessor: function () {
       this.$parent.$emit('editProfessor', this.prof)
+    },
+    selectProf: function () {
+      this.$parent.$emit('selectProf', this.prof._id)
+    }
+  },
+  computed: {
+    universities: function () {
+      return this.$store.state.universities
     }
   }
 }
@@ -59,9 +69,5 @@ i.right.floated {
 
 .ui.card .unknown {
   color: red;
-}
-
-.content.header.selected {
-  background-color: rgba(0, 0, 0, 0.2);
 }
 </style>

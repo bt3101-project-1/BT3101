@@ -17,9 +17,11 @@
             <fSelect :additions="true"></fSelect>
           </div>
           <div class="ui buttons">
-            <button class="ui black button" v-on:click="search">Search the Database</button>
+            <button class="ui black button" v-on:click="search"><i class="search icon"></i>Search the Database</button>
             <div class="or"></div>
-            <button class="ui positive button" v-on:click="requestCrawl">Request a Crawl</button>
+            <button class="ui blue button" v-on:click="crawlMonitor"><i class="settings icon"></i>Check Crawl Progress</button>
+            <div class="or"></div>
+            <button class="ui positive button" v-on:click="requestCrawl"><i class="share icon"></i>Request a Crawl</button>
           </div>
           <div class="ui error message"></div>
         </div>
@@ -82,6 +84,9 @@ export default {
         fId: this.fId,
         router: this.$router
       })
+    },
+    crawlMonitor: function () {
+      this.$router.push('crawlMonitor')
     }
   },
   computed: {
@@ -104,7 +109,7 @@ export default {
 }
 
 .large.form {
-  width: 450px;
+  width: 800px;
 }
 
 .field {

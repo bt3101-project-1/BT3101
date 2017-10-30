@@ -2,6 +2,24 @@
   <div id="database-page">
     <div id="mouseover-zone">
       <div class="ui vertical menu" id="filter-menu">
+        <div class="ui simple dropdown item sub">
+          Save Selection
+          <i class="dropdown icon"></i>
+          <div class="menu sub">
+            <a class="item" v-for="(i,id) in saveslots" @click="saveSelectionModal(id)">
+              {{i.name}}
+            </a>
+          </div>
+        </div>
+        <div class="ui simple dropdown item sub">
+          Load Selection
+          <i class="dropdown icon"></i>
+          <div class="menu sub">
+            <a class="item" v-for="(i,id) in saveslots" v-if="i.name !== '(blank)'" @click="loadSelection(id)">
+              {{i.name}}
+            </a>
+          </div>
+        </div>
         <div class="item">
           <h5><i class="random icon"></i>SORT</h5>
           <div class="menu">
@@ -64,12 +82,6 @@
             Download CSV
           </button>
         </div>
-        <div class="item">
-          <button class="ui button" @click="crawlRequest">
-            <i class="share icon"></i>
-            Submit Crawl Request
-          </button>
-        </div>
       </div>
     </div>
     <div id="search-bar">
@@ -81,8 +93,9 @@
       </div>
     </div>
     <!-- <dbList :professors="professors"></dbList> -->
-    <component :is="layout" :professors="professors"></component>
+    <component :is="layout" :professors="professors" :selectedProfs="selectedProfs"></component>
     <pModal :prof="pModalp"></pModal>
+    <sModal></sModal>
   </div>
 </template>
 
@@ -93,13 +106,15 @@ import fSelect from '@/components/faculty-selector'
 import dbList from '@/components/database-list'
 import dbGrid from '@/components/database-grid'
 import pModal from '@/components/professor-modal'
+import sModal from '@/components/save-selection-modal'
 export default {
   components: {
     uSelect: uSelect,
     fSelect: fSelect,
     dbList: dbList,
     dbGrid: dbGrid,
-    pModal: pModal
+    pModal: pModal,
+    sModal: sModal
   },
   mounted: function () {
     $(this.$el).find('.menu.sub').css('overflow', 'auto')
@@ -107,6 +122,18 @@ export default {
       $('#filter-menu').addClass('visible')
     }).on('mouseout', function (e) {
       $('#filter-menu').removeClass('visible')
+    })
+    this.pModal = $(this.$el).find('#professor-modal').modal({
+      onApprove: function () {
+        return false
+      },
+      duration: 300
+    })
+    this.sModal = $(this.$el).find('#save-modal').modal({
+      onApprove: function () {
+        return false
+      },
+      duration: 300
     })
     this.$on('selectUniversity', function (v) {
       if (!this.$store.state.fId) {
@@ -130,17 +157,21 @@ export default {
         router: this.$router
       })
     }.bind(this))
-    this.pModal = $(this.$el).find('#professor-modal').modal({
-      onApprove: function () {
-        return false
-      },
-      duration: 300
-    })
     this.$on('editProfessor', function (p) {
       this.editProfessor(p)
     }.bind(this))
     this.$on('saveProfessor', function (p) {
       this.saveProfessor(p)
+    }.bind(this))
+    this.$on('selectProf', function (profId) {
+      if (this.selectedProfs.includes(profId)) {
+        this.selectedProfs.splice(this.selectedProfs.indexOf(profId), 1)
+      } else {
+        this.selectedProfs.push(profId)
+      }
+    }.bind(this))
+    this.$on('saveSelection', function (name) {
+      this.saveSelection(name)
     }.bind(this))
   },
   data: function () {
@@ -153,7 +184,10 @@ export default {
       selPromotionInsts: {},
       selRanks: {},
       pModal: null,
-      pModalp: this.$store.state.professorsList[0]
+      sModal: null,
+      pModalp: this.$store.state.professorsList[0],
+      selectedProfs: [],
+      slotId: 0
     }
   },
   methods: {
@@ -173,6 +207,32 @@ export default {
           this.pModal.modal('hide')
         }.bind(this)
       })
+    },
+    saveSelectionModal: function (slotId) {
+      this.slotId = slotId
+      this.sModal.modal('show')
+    },
+    saveSelection: function (name) {
+      this.$store.dispatch('callMethodAndCallback', {
+        params: ['setSaveSlot', this.slotId, {
+          professorIds: 0 in this.selectedProfs ? this.selectedProfs : this.professors.map(e => e._id),
+          name: name,
+          universityIds: this.$store.state.uIds,
+          facultyId: this.$store.state.fId
+        }],
+        callback: function (r) {
+          this.sModal.modal('hide')
+        }.bind(this)
+      })
+    },
+    loadSelection: function (slotId) {
+      console.log(this.saveslots[slotId])
+      this.$store.dispatch('searchProfessors', {
+        uIds: this.saveslots[slotId].universityIds,
+        fId: this.saveslots[slotId].facultyId,
+        router: this.$router
+      })
+      this.selectedProfs = this.saveslots[slotId].professorIds
     },
     setLayout: function (l) {
       this.layout = l
@@ -297,6 +357,9 @@ export default {
     },
     promotionInstitutions: function () {
       return [...new Set(this.results.map(i => i.promotionInstitution || '(Blank)'))]
+    },
+    saveslots: function () {
+      return this.$store.state.saveslots
     }
   },
   watch: {

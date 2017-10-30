@@ -145,6 +145,7 @@ const app = new Vue({
       this.$store.state.conn.subscribe('allFaculties')
       this.$store.state.conn.subscribe('allProfessors')
       this.$store.state.conn.subscribe('allCrawlRequests')
+      this.$store.state.conn.subscribe('saveSlots')
     }.bind(this))
     this.$store.state.conn.on('loggedOut', function () {
       this.$router.push('/')
