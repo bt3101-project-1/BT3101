@@ -104,6 +104,9 @@ Meteor.methods({
       faculties.insert({name: fId})
     }
     return professors.find({universityId: {$in: uIds}, facultyId: fId}).fetch()
+  },
+  editProfessor: function (pId, data) {
+    professors.update(pId, {$set: data})
   }
 })
 

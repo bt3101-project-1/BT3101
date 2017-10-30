@@ -82,6 +82,7 @@
     </div>
     <!-- <dbList :professors="professors"></dbList> -->
     <component :is="layout" :professors="professors"></component>
+    <pModal :prof="pModalp"></pModal>
   </div>
 </template>
 
@@ -91,13 +92,14 @@ import uSelect from '@/components/university-selector'
 import fSelect from '@/components/faculty-selector'
 import dbList from '@/components/database-list'
 import dbGrid from '@/components/database-grid'
+import pModal from '@/components/professor-modal'
 export default {
   components: {
     uSelect: uSelect,
     fSelect: fSelect,
     dbList: dbList,
-    dbGrid: dbGrid
-
+    dbGrid: dbGrid,
+    pModal: pModal
   },
   mounted: function () {
     $(this.$el).find('.menu.sub').css('overflow', 'auto')
@@ -128,6 +130,15 @@ export default {
         router: this.$router
       })
     }.bind(this))
+    this.pModal = $(this.$el).find('#professor-modal').modal({
+      onApprove: function () {
+        return false
+      },
+      duration: 300
+    })
+    this.$on('editProfessor', function (p) {
+      this.editProfessor(p)
+    }.bind(this))
   },
   data: function () {
     return {
@@ -137,10 +148,16 @@ export default {
       minPromotionYear: '',
       selPhdInsts: {},
       selPromotionInsts: {},
-      selRanks: {}
+      selRanks: {},
+      pModal: null,
+      pModalp: this.$store.state.professorsList[0]
     }
   },
   methods: {
+    editProfessor: function (p) {
+      this.pModalp = JSON.parse(JSON.stringify(p))
+      this.pModal.modal('show')
+    },
     setLayout: function (l) {
       this.layout = l
     },

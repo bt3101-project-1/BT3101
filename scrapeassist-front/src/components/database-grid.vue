@@ -12,6 +12,11 @@ export default {
   components: {
     profCard: profCard
   },
+  mounted: function () {
+    this.$on('editProfessor', function (p) {
+      this.$parent.$emit('editProfessor', p)
+    }.bind(this))
+  },
   props: ['professors']
 }
 </script>
