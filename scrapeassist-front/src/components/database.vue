@@ -139,6 +139,9 @@ export default {
     this.$on('editProfessor', function (p) {
       this.editProfessor(p)
     }.bind(this))
+    this.$on('saveProfessor', function (p) {
+      this.saveProfessor(p)
+    }.bind(this))
   },
   data: function () {
     return {
@@ -157,6 +160,19 @@ export default {
     editProfessor: function (p) {
       this.pModalp = JSON.parse(JSON.stringify(p))
       this.pModal.modal('show')
+    },
+    saveProfessor: function (p) {
+      this.$store.dispatch('callMethodAndCallback', {
+        params: ['editProfessor', p._id, p],
+        callback: function (r) {
+          this.$store.dispatch('searchProfessors', {
+            uIds: this.$store.state.uIds,
+            fId: this.$store.state.fId,
+            router: this.$router
+          })
+          this.pModal.modal('hide')
+        }.bind(this)
+      })
     },
     setLayout: function (l) {
       this.layout = l

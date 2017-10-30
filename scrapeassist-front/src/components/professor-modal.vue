@@ -53,7 +53,7 @@
       <div class="ui black deny button">
         Cancel
       </div>
-      <div class="ui positive right labeled icon button">
+      <div class="ui positive right labeled icon button" @click="save">
         Save
         <i class="checkmark icon"></i>
       </div>
@@ -76,6 +76,11 @@ export default {
           promotionInstitution: ''
         }
       }
+    }
+  },
+  methods: {
+    save: function () {
+      this.$parent.$emit('saveProfessor', this.prof)
     }
   }
 }

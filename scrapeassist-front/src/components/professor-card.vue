@@ -1,7 +1,7 @@
 <template>
   <div class="ui card">
     <div class="content header" :class="{selected: selected}">
-      <a><i class="right floated remove icon"></i></a>
+      <!-- <a><i class="right floated remove icon"></i></a> -->
       <a @click="editProfessor"><i class="right floated pencil icon"></i></a>
       <div class="header">{{prof.name}}</div>
       <div class="meta" :class="{unknown: !prof.rank}">
