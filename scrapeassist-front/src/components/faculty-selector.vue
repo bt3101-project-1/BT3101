@@ -34,6 +34,11 @@ export default {
     faculties: function () {
       return this.$store.state.faculties
     }
+  },
+  watch: {
+    fId: function (v) {
+      console.log(v)
+    }
   }
 }
 </script>

@@ -37,7 +37,10 @@ if (!saveslots.find({}).count()) {
 
 Meteor.methods({
   setSaveSlot: function (sId, opt) {
+    saveslots.update(sId, {$set: {professorIds: [], universityIds: []}})
     saveslots.update(sId, {$set: opt})
+    console.log(opt.universityIds)
+    saveslots.update(sId, {$push: {professorIds: {$each: opt.professorIds}, universityIds: {$each: opt.universityIds}}})
   }
 })
 

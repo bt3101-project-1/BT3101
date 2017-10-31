@@ -213,11 +213,12 @@ export default {
       this.sModal.modal('show')
     },
     saveSelection: function (name) {
+      console.log(this.$store.state.uIds.slice())
       this.$store.dispatch('callMethodAndCallback', {
         params: ['setSaveSlot', this.slotId, {
-          professorIds: 0 in this.selectedProfs ? this.selectedProfs : this.professors.map(e => e._id),
+          professorIds: this.selectedProfs,
           name: name,
-          universityIds: this.$store.state.uIds,
+          universityIds: this.$store.state.uIds.slice(),
           facultyId: this.$store.state.fId
         }],
         callback: function (r) {
@@ -233,6 +234,8 @@ export default {
         router: this.$router
       })
       this.selectedProfs = this.saveslots[slotId].professorIds
+      this.$forceUpdate()
+      console.log(this.$store.state.uIds)
     },
     setLayout: function (l) {
       this.layout = l
