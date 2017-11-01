@@ -30,7 +30,8 @@ const store = new Vuex.Store({
     fId: '',
     dbSearchResults: [],
     cruIds: [],
-    crfId: ''
+    crfId: '',
+    crId: ''
   },
   mutations: {
     added: function (s, o) {

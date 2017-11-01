@@ -1,7 +1,7 @@
 <template>
   <div class="ui segment" id="segment">
     <div class="ui six cards">
-      <profCard v-for="(i,id) in professors" :prof="i" :key="id" :selected="selectedProfs.includes(i._id)"></profCard>
+      <profCard v-for="(i,id) in professors" :showCheckbox="true" :prof="i" :key="id" :selected="selectedProfs.includes(i._id)"></profCard>
     </div>
   </div>
 </template>

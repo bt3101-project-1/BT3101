@@ -19,7 +19,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="i in crawlrequests">
+        <tr v-for="(i, id) in crawlrequests">
           <td>
             <h4 class="ui image header">
               <div class="content">
@@ -31,42 +31,16 @@
             {{i.facultyUrl}}
           </td>
           <td>
-            23/9/2017 1:13pm
+            {{(new Date(i.timeStampStart.$date)).toLocaleString()}}
           </td>
           <td>
+            {{'timeStampEnd' in i ? (new Date(i.timeStampEnd.$date)).toLocaleString() : ''}}
           </td>
           <td>
-            {{0 in i.status ? 'Pending' : 'Received'}}
+            {{!('timeStampEnd' in i) ? 'Pending' : 'Completed'}}
           </td>
           <td>
-            <!-- <button class="ui right labeled icon button">
-              <i class="right arrow icon"></i>
-              View Results
-            </button> -->
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <h4 class="ui image header">
-              <div class="content">
-                Nanyang Technological University
-                <div class="sub header">Faculty of Science</div>
-            </div>
-          </h4></td>
-          <td>
-            http://www.google.com
-          </td>
-          <td>
-            23/9/2017 1:13pm
-          </td>
-          <td>
-            24/9/2017 4:28pm
-          </td>
-          <td>
-            Completed
-          </td>
-          <td>
-            <button class="ui right labeled icon button green" @click="results">
+            <button class="ui right labeled icon button positive" @click="results(id)" v-if="('timeStampEnd' in i)">
               <i class="right arrow icon"></i>
               View Results
             </button>
@@ -80,7 +54,8 @@
 <script>
 export default {
   methods: {
-    results: function () {
+    results: function (id) {
+      this.$store.state.crId = id
       this.$router.push('manualcrawl')
     }
   },

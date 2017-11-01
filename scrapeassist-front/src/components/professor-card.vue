@@ -1,9 +1,9 @@
 <template>
-  <div class="ui card">
+  <div class="ui card" :class="{selected: selected}">
     <div class="content header" :class="{selected: selected}">
       <!-- <a><i class="right floated remove icon"></i></a> -->
       <a @click="editProfessor"><i class="right floated pencil icon"></i></a>
-      <a><i class="right floated square icon" :class="{outline: !selected, check: selected}" @click="selectProf"></i></a>
+      <a><i class="right floated square icon" v-if="showCheckbox" :class="{outline: !selected, check: selected}" @click="selectProf"></i></a>
       <div class="header">{{prof.name}}</div>
       <div class="meta" :class="{unknown: !prof.rank}">
         {{prof.rank ? prof.rank : 'Unknown Academic Rank'}} <br>
@@ -38,7 +38,7 @@
 
 <script>
 export default {
-  props: ['prof', 'selected', 'idx'],
+  props: ['prof', 'selected', 'idx', 'showCheckbox'],
   methods: {
     select: function () {
       this.$parent.$emit('select', this.idx)
@@ -69,5 +69,9 @@ i.right.floated {
 
 .ui.card .unknown {
   color: red;
+}
+
+.ui.card.selected {
+  box-shadow: 0px 1px 3px 0px #777777, 0px 0px 0px 1px #777777
 }
 </style>

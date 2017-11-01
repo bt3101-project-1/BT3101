@@ -85,6 +85,10 @@
       </div>
     </div>
     <div id="search-bar">
+      <button class="ui basic button" @click="back">
+        <i class="icon left chevron"></i>
+        Back
+      </button>
       <div class="university field">
         <uSelect :uIds="$store.state.uIds"></uSelect>
       </div>
@@ -191,6 +195,9 @@ export default {
     }
   },
   methods: {
+    back: function () {
+      this.$router.push('search')
+    },
     editProfessor: function (p) {
       this.pModalp = JSON.parse(JSON.stringify(p))
       this.pModal.modal('show')
@@ -221,7 +228,6 @@ export default {
       })
     },
     loadSelection: function (slotId) {
-      console.log(this.saveslots[slotId])
       this.$store.dispatch('searchProfessors', {
         uIds: this.saveslots[slotId].universityIds,
         fId: this.saveslots[slotId].facultyId,
@@ -229,7 +235,6 @@ export default {
       })
       this.selectedProfs = this.saveslots[slotId].professorIds
       this.$forceUpdate()
-      console.log(this.$store.state.uIds)
     },
     setLayout: function (l) {
       this.layout = l
@@ -261,10 +266,10 @@ export default {
     generateCSV: function () {
       var csvContent = 'data:text/csv;charset=utf-8,'
       var keys = ['universityId', 'facultyId', 'name', 'rank', 'phdYear', 'phdInstitution', 'promotionYear', 'promotionInstitution', 'researchInterests']
-      var headers = ['"University"', '"Faculty"', '"Name"', '"Academic Rank"', '"Year of Phd"', '"PhD Institution"', '"Research Interests"', '"Year of Promotion"', '"Promotion Institution"']
+      var headers = ['"University"', '"Faculty"', '"Name"', '"Academic Rank"', '"Year of Phd"', '"PhD Institution"', '"Year of Promotion"', '"Promotion Institution"', '"Research Interests"']
       csvContent += headers.join(',') + '\n'
-      for (var i in this.professors) {
-        var p = this.professors[i]
+      for (var i in this.csvProfessors) {
+        var p = this.csvProfessors[i]
         var dataString = ''
         keys.forEach(function (e) {
           if (e in p) {
@@ -288,7 +293,7 @@ export default {
       var encodedUri = encodeURI(csvContent)
       var link = document.createElement('a')
       link.setAttribute('href', encodedUri)
-      link.setAttribute('download', 'test.csv')
+      link.setAttribute('download', 'professors.csv')
       document.body.appendChild(link)
       link.click()
     }
@@ -340,6 +345,9 @@ export default {
       }.bind(this)
       return this.$store.state.dbSearchResults.sort(cmpFn(this.k)).filter(filterFn)
     },
+    csvProfessors: function () {
+      return this.professors.filter(e => this.selectedProfs.includes(e._id) || !(0 in this.selectedProfs))
+    },
     universities: function () {
       return this.$store.state.universities
     },
@@ -380,7 +388,7 @@ export default {
 
 #mouseover-zone {
   height: 700px;
-  width: 250px;
+  width: 200px;
   position: absolute;
   top: calc(50vh - 350px);
   left: 0;
@@ -446,8 +454,18 @@ export default {
   flex: 0 0 auto;
 }
 
+#search-bar button{
+  flex: 0 0 auto;
+  border: 0px solid rgba(0, 0, 0, 0);
+  text-align: left;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  font-weight: bold;
+}
+
 .field.university {
   width: calc(75% - 10px);
+  margin-right: 10px;
 }
 
 .field.faculty {
