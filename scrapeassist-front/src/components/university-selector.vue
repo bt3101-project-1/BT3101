@@ -36,6 +36,11 @@ export default {
     universities: function () {
       return this.$store.state.universities
     }
+  },
+  watch: {
+    // uIds: function (v) {
+    //   $(this.$el).find('#university-select').dropdown('set exactly', v)
+    // }
   }
 }
 </script>

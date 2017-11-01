@@ -213,14 +213,8 @@ export default {
       this.sModal.modal('show')
     },
     saveSelection: function (name) {
-      console.log(this.$store.state.uIds.slice())
       this.$store.dispatch('callMethodAndCallback', {
-        params: ['setSaveSlot', this.slotId, {
-          professorIds: this.selectedProfs,
-          name: name,
-          universityIds: this.$store.state.uIds.slice(),
-          facultyId: this.$store.state.fId
-        }],
+        params: ['setSaveSlot', this.slotId, this.selectedProfs.slice(), name, this.$store.state.uIds.slice(), this.$store.state.fId],
         callback: function (r) {
           this.sModal.modal('hide')
         }.bind(this)

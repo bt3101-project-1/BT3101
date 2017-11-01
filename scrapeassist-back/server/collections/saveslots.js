@@ -13,6 +13,9 @@ const saveslotSchema = new SimpleSchema({
     type: Array,
     defaultValue: []
   },
+  'professorIds' : {
+    type: String
+  },
   name: {
     type: String,
     defaultValue: '(blank)'
@@ -20,6 +23,9 @@ const saveslotSchema = new SimpleSchema({
   universityIds: {
     type: Array,
     defaultValue: []
+  },
+  'universityIds.$': {
+    type: String
   },
   facultyId: {
     type: String,
@@ -36,11 +42,14 @@ if (!saveslots.find({}).count()) {
 }
 
 Meteor.methods({
-  setSaveSlot: function (sId, opt) {
-    saveslots.update(sId, {$set: {professorIds: [], universityIds: []}})
-    saveslots.update(sId, {$set: opt})
-    console.log(opt.universityIds)
-    saveslots.update(sId, {$push: {professorIds: {$each: opt.professorIds}, universityIds: {$each: opt.universityIds}}})
+  setSaveSlot: function (sId, pIds, name, uIds, fId) {
+    var curr = saveslots.findOne({_id: sId})
+    saveslots.update(sId, {$pullAll: {universityIds: curr.universityIds, professorIds: curr.professorIds}})
+    saveslots.update(sId, {$set: {name: name, facultyId: fId}, $push: {universityIds: {$each: uIds}}})
+    if (0 in pIds) {
+      console.log('haha')
+      saveslots.update(sId, {$push: {professorIds: pIds}})
+    }
   }
 })
 

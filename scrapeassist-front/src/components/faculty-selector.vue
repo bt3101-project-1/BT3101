@@ -37,7 +37,7 @@ export default {
   },
   watch: {
     fId: function (v) {
-      console.log(v)
+      $(this.$el).find('#faculty-select').dropdown('set selected', v)
     }
   }
 }
