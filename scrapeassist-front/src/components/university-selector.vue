@@ -38,9 +38,11 @@ export default {
     }
   },
   watch: {
-    // uIds: function (v) {
-    //   $(this.$el).find('#university-select').dropdown('set exactly', v)
-    // }
+    uIds: function (v) {
+      if (JSON.stringify(v) !== JSON.stringify($(this.$el).find('#university-select').dropdown('get value'))) {
+        $(this.$el).find('#university-select').dropdown('set exactly', v)
+      }
+    }
   }
 }
 </script>
