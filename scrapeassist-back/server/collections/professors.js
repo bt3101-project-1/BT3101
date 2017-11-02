@@ -54,14 +54,15 @@ const professorSchema = new SimpleSchema({
   },
   relevantData: {
     type: Array,
-    defaultValue: []
+    // defaultValue: []
   },
-  'relevantURLs.$': {
+  'relevantData.$': {
     type: relevantDataSchema
   }
 })
 
 professors.attachSchema(professorSchema)
+
 
 if (!professors.find({}).count()) {
   var Fiber = require('fibers')
@@ -88,7 +89,11 @@ if (!professors.find({}).count()) {
       data['universityId'] = uid
       delete data.university
       delete data.faculty
+      if (!('relevantData' in data)) {
+        data.relevantData = []
+      }
       professors.insert(data)
+
     }).run()
   })
 }

@@ -1,39 +1,31 @@
 <template>
   <div id="main">
-    <div id="data" v-if="crId in crawlrequests">
-      <!-- <div class="ui secondary pointing menu">
-        <a class="item active">
-          Data
-        </a>
-        <div class="right menu">
-          <div class="item">
-            <div class="ui icon input">
-              <input placeholder="Search..." type="text">
-              <i class="search link icon"></i>
-            </div>
-          </div>
-        </div>
-      </div> -->
-      <div id="header">
-        <button class="ui basic button" @click="back">
-          <i class="icon left chevron"></i>
-          Back
-        </button>
-        <div class="ufname">
-          <h3>
-            {{universities[cr.universityId].name}}
-          </h3>
-          <h3 class="faculty-name">
-            {{faculties[cr.facultyId].name}}
-          </h3>
-        </div>
-      </div>
-      <div class="ui three cards">
-        <profCard v-for="i in crProfs" :prof="profs[i]" :selected="selId === i" :key="i" @click.native="select(i._id)" :showCheckbox="false"></profCard>
+    <div id="header">
+      <button class="ui basic button" @click="back">
+        <i class="icon left chevron"></i>
+        Back
+      </button>
+      <div class="ufname">
+        <h3>
+          {{universities[cr.universityId].name}}
+        </h3>
+        <h3 class="faculty-name">
+          {{faculties[cr.facultyId].name}}
+        </h3>
       </div>
     </div>
-    <div id="results" v-if="crId in crawlrequests">
-      <!-- <template v-for="i in cr.professorIds"></template> -->
+    <div id="content">
+      <div id="data" v-if="crId in crawlrequests">
+        <div class="ui three cards">
+          <profCard v-for="i in crProfs" :selectedField="selectedField" :prof="profs[i]" :selected="selId === i" :key="i" @click.native="select(i)" :showCheckbox="false"></profCard>
+        </div>
+      </div>
+      <div id="results" v-if="crId in crawlrequests && selId">
+        <template v-for="i in profs[selId].relevantData" v-if="('relevantData' in profs[selId]) && selId">
+          <a style="text-align: left" :href="i.url">{{i.url}}</a>
+          <span style="text-align: left; color: black; font-size: larger; line-height: 32px;">{{i.snippet}}</span><br><br>
+        </template>
+      </div>
     </div>
     <pModal :prof="pModalp"></pModal>
   </div>
@@ -55,18 +47,30 @@ export default {
       },
       duration: 300
     })
+    $(document).keypress(function (e) {
+      if (e.which === 13) {
+        this.saveToDatabase()
+      }
+    }.bind(this))
     this.$on('editProfessor', function (p) {
       this.editProfessor(p)
     }.bind(this))
     this.$on('saveProfessor', function (p) {
       this.saveProfessor(p)
     }.bind(this))
+    this.$on('selectField', function (f) {
+      this.selectField(f)
+    }.bind(this))
+  },
+  beforeDestroy: function () {
+    $(document).unbind('keypress')
   },
   data: function () {
     return {
       selId: '',
       pModal: null,
-      pModalp: this.$store.state.professorsList[0]
+      pModalp: this.$store.state.professorsList[0],
+      selectedField: ''
     }
   },
   methods: {
@@ -75,9 +79,7 @@ export default {
     },
     select: function (id) {
       this.selId = id
-    }
-  },
-  computed: {
+    },
     editProfessor: function (p) {
       this.pModalp = JSON.parse(JSON.stringify(p))
       this.pModal.modal('show')
@@ -86,15 +88,32 @@ export default {
       this.$store.dispatch('callMethodAndCallback', {
         params: ['editProfessor', p._id, p],
         callback: function (r) {
-          this.$store.dispatch('searchProfessors', {
-            uIds: this.$store.state.uIds,
-            fId: this.$store.state.fId,
-            router: this.$router
-          })
           this.pModal.modal('hide')
         }.bind(this)
       })
     },
+    selectField: function (f) {
+      this.selectedField = f
+    },
+    saveToDatabase: function () {
+      console.log('running!')
+      if (!this.selectedField || !this.selId) {
+        return
+      }
+      console.log('hello!')
+      var text = ''
+      if (window.getSelection) {
+        text = window.getSelection().toString()
+      } else if (document.selection && document.selection.type !== 'Control') {
+        text = document.selection.createRange().text
+      }
+      console.log(text)
+      var prof = JSON.parse(JSON.stringify(this.profs[this.selId]))
+      prof[this.selectedField] = text
+      this.$store.dispatch('callMethod', ['editProfessor', this.selId, prof])
+    }
+  },
+  computed: {
     profs: function () {
       return this.$store.state.professors
     },
@@ -124,36 +143,38 @@ export default {
 </script>
 
 <style scoped>
-#test-hot {
+#main {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   overflow: hidden;
 }
 
-#main {
+#content {
+  flex: 1 1 auto;
+  overflow: none;
   display: flex;
   flex-direction: row;
-  height: 100%;
-  width: 100%;
+  align-items: stretch;
 }
 
 #data {
-  height: 100%;
   width: 50%;
   display: block;
-  position: fixed;
+  position: relative;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 #results {
-  height: 100%;
   width: 50%;
-  background-color: #EFEFEF;
-  position: absolute;
-  right: 0;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+  padding: 24px;
 }
 
 .ui.secondary.pointing.menu {
