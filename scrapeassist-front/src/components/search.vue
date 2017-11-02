@@ -106,6 +106,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 .large.form {

@@ -1,5 +1,9 @@
 <template>
   <div id="crawler-page">
+    <button id="back-button" class="ui basic button" @click="back">
+      <i class="icon left chevron"></i>
+      Back
+    </button>
     <h2 class="ui icon header">
       <i class="cogs icon"></i>
       <div class="content">
@@ -53,10 +57,16 @@
 
 <script>
 export default {
+  mounted: function () {
+    console.log('mounted!')
+  },
   methods: {
     results: function (id) {
       this.$store.state.crId = id
       this.$router.push('manualcrawl')
+    },
+    back: function () {
+      this.$router.push('search')
     }
   },
   computed: {
@@ -81,5 +91,15 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 100%;
+}
+
+#back-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0px solid black !important;
+  box-shadow: none;
+  padding: 10px 10px;
 }
 </style>

@@ -383,7 +383,8 @@ export default {
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-  position: relative;
+  position: absolute;
+  width: 100%;
 }
 
 #mouseover-zone {
@@ -461,6 +462,7 @@ export default {
   -webkit-box-shadow: none;
   box-shadow: none;
   font-weight: bold;
+  padding: 10px 10px;
 }
 
 .field.university {
