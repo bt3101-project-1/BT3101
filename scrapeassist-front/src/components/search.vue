@@ -84,6 +84,13 @@ export default {
       })
     },
     requestCrawl: function () {
+      if (!(0 in this.uIds && this.fId)) {
+        return this.$store.commit('showMessageModal', {
+          title: 'Blank Fields',
+          msg: 'Please fill in all fields for the search query.',
+          icon: 'exclamation triangle'
+        })
+      }
       this.$store.commit('setCrawlRequest', {
         uIds: this.uIds,
         fId: this.fId,
