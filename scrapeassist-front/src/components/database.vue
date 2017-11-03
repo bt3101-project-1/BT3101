@@ -20,18 +20,6 @@
             </a>
           </div>
         </div>
-        <div class="item">
-          <h5><i class="random icon"></i>SORT</h5>
-          <div class="menu">
-            <a class="item" @click="sortList('name')" :class="{active: k==='name'}">Name</a>
-            <a class="item" @click="sortList('university')" :class="{active: k==='university'}">Current Institution</a>
-            <a class="item" @click="sortList('rank')" :class="{active: k==='rank'}">Academic Rank</a>
-            <a class="item" @click="sortList('phdYear')" :class="{active: k==='phdYear'}">Year of PhD</a>
-            <a class="item" @click="sortList('phdInstitution')" :class="{active: k==='phdInstitution'}">PhD Instution</a>
-            <a class="item" @click="sortList('promotionYear')" :class="{active: k==='promotionYear'}">Year of Promotion</a>
-            <a class="item" @click="sortList('promotionInstitution')" :class="{active: k==='promotionInstitution'}">Promotion Institution</a>
-          </div>
-        </div>
         <div class="item" id="filters-menu">
           <h5><i class="filter icon"></i>FILTER</h5>
           <div class="ui icon input transparent">
@@ -60,6 +48,18 @@
           <i class="dropdown icon"></i>
           <div class="menu sub">
             <a class="item" v-for="(i,id) in promotionInstitutions" :class="{selected: id in selPromotionInsts}" @click="selectFilter(id, selPromotionInsts)">{{i}}</a>
+          </div>
+        </div>
+        <div class="item">
+          <h5><i class="random icon"></i>SORT</h5>
+          <div class="menu">
+            <a class="item" @click="sortList('name')" :class="{active: k==='name'}">Name</a>
+            <a class="item" @click="sortList('university')" :class="{active: k==='university'}">Current Institution</a>
+            <a class="item" @click="sortList('rank')" :class="{active: k==='rank'}">Academic Rank</a>
+            <a class="item" @click="sortList('phdYear')" :class="{active: k==='phdYear'}">Year of PhD</a>
+            <a class="item" @click="sortList('phdInstitution')" :class="{active: k==='phdInstitution'}">PhD Instution</a>
+            <a class="item" @click="sortList('promotionYear')" :class="{active: k==='promotionYear'}">Year of Promotion</a>
+            <a class="item" @click="sortList('promotionInstitution')" :class="{active: k==='promotionInstitution'}">Promotion Institution</a>
           </div>
         </div>
         <div class="item">

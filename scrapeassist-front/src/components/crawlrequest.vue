@@ -23,12 +23,16 @@
             </div>
           </template>
           <div class="ui buttons">
-            <button class="ui positive button" v-on:click="crawl">Start Crawling</button>
+            <button class="ui positive button" v-on:click="crawl"><i class="icon share"></i>Start Crawling</button>
           </div>
           <div class="ui error message"></div>
         </div>
       </div>
     </div>
+    <button id="back-button" class="ui basic button" @click="back">
+      <i class="icon left chevron"></i>
+      Back
+    </button>
   </div>
 </template>
 
@@ -47,6 +51,9 @@ export default {
           this.$router.push('crawlmonitor')
         }.bind(this)
       })
+    },
+    back: function () {
+      this.$router.push('search')
     }
   }
 }
@@ -68,5 +75,16 @@ export default {
 h5 {
   text-align: left;
   margin-bottom: 0px;
+}
+
+#back-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0px solid black !important;
+  box-shadow: none;
+  padding: 10px 10px;
+  font-weight: bold;
+  height: 46px;
 }
 </style>

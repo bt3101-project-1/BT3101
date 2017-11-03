@@ -57,9 +57,6 @@
 
 <script>
 export default {
-  mounted: function () {
-    console.log('mounted!')
-  },
   methods: {
     results: function (id) {
       this.$store.state.crId = id
@@ -77,7 +74,6 @@ export default {
       return this.$store.state.faculties
     },
     crawlrequests: function () {
-      console.log(this.$store.state.crawlrequests)
       return this.$store.state.crawlrequests
     }
   }
@@ -101,5 +97,7 @@ export default {
   border: 0px solid black !important;
   box-shadow: none;
   padding: 10px 10px;
+  font-weight: bold;
+  height: 46px;
 }
 </style>

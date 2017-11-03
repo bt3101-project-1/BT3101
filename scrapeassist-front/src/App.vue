@@ -24,12 +24,16 @@ export default {
       switch (from.name + '->' + to.name) {
         case 'search->crawlmonitor':
         case 'crawlmonitor->manualcrawl':
+        case 'search->crawlrequest':
+        case 'crawlrequest->crawlmonitor':
           this.transitionName = 'slide-left'
           break
         case 'search->database':
+        case 'main->search':
           this.transitionName = 'slide-up'
           break
         case 'database->search':
+        case 'search->main':
           this.transitionName = 'slide-down'
           break
         default:
@@ -68,7 +72,7 @@ export default {
 }
 
 .slide-right-enter-active, .slide-right-leave-active {
-  transition: transform .5s;
+  transition: all .5s;
   position: absolute;
   background-color: white;
 }
@@ -81,6 +85,10 @@ export default {
 
 .slide-right-enter {
   transform: translateX(-100vw)
+}
+
+.slide-right-leave-to {
+  opacity: 0;
 }
 
 .slide-up-enter-active, .slide-up-leave-active {

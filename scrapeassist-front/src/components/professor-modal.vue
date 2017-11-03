@@ -2,7 +2,7 @@
   <div class="ui modal" id="professor-modal">
     <i class="close icon"></i>
     <div class="header">
-      Edit Professor
+      Edit Professor's Information
     </div>
     <div class="content">
       <div class="ui form">
