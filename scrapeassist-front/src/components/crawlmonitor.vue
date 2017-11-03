@@ -1,5 +1,9 @@
 <template>
   <div id="crawler-page">
+    <button id="back-button" class="ui basic button" @click="back">
+      <i class="icon left chevron"></i>
+      Back
+    </button>
     <h2 class="ui icon header">
       <i class="cogs icon"></i>
       <div class="content">
@@ -19,7 +23,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="i in crawlrequests">
+        <tr v-for="(i, id) in crawlrequests">
           <td>
             <h4 class="ui image header">
               <div class="content">
@@ -31,42 +35,16 @@
             {{i.facultyUrl}}
           </td>
           <td>
-            23/9/2017 1:13pm
+            {{(new Date(i.timeStampStart.$date)).toLocaleString()}}
           </td>
           <td>
+            {{'timeStampEnd' in i ? (new Date(i.timeStampEnd.$date)).toLocaleString() : ''}}
           </td>
           <td>
-            {{0 in i.status ? 'Pending' : 'Received'}}
+            {{!('timeStampEnd' in i) ? 'Pending' : 'Completed'}}
           </td>
           <td>
-            <!-- <button class="ui right labeled icon button">
-              <i class="right arrow icon"></i>
-              View Results
-            </button> -->
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <h4 class="ui image header">
-              <div class="content">
-                Nanyang Technological University
-                <div class="sub header">Faculty of Science</div>
-            </div>
-          </h4></td>
-          <td>
-            http://www.google.com
-          </td>
-          <td>
-            23/9/2017 1:13pm
-          </td>
-          <td>
-            24/9/2017 4:28pm
-          </td>
-          <td>
-            Completed
-          </td>
-          <td>
-            <button class="ui right labeled icon button green" @click="results">
+            <button class="ui right labeled icon button positive" @click="results(id)" v-if="('timeStampEnd' in i)">
               <i class="right arrow icon"></i>
               View Results
             </button>
@@ -80,8 +58,12 @@
 <script>
 export default {
   methods: {
-    results: function () {
+    results: function (id) {
+      this.$store.state.crId = id
       this.$router.push('manualcrawl')
+    },
+    back: function () {
+      this.$router.push('search')
     }
   },
   computed: {
@@ -92,7 +74,6 @@ export default {
       return this.$store.state.faculties
     },
     crawlrequests: function () {
-      console.log(this.$store.state.crawlrequests)
       return this.$store.state.crawlrequests
     }
   }
@@ -106,5 +87,17 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 100%;
+}
+
+#back-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0px solid black !important;
+  box-shadow: none;
+  padding: 10px 10px;
+  font-weight: bold;
+  height: 46px;
 }
 </style>

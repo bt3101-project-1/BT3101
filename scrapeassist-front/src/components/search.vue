@@ -27,6 +27,11 @@
         </div>
       </div>
     </div>
+    <h3 id="login-indicator">You are logged in as <span style="font-weight: bold;">Admin</span></h3>
+    <button id="logout-button" class="ui basic button" @click="logout">
+      Logout
+      <i class="icon sign out" style="font-size: large; padding-left: 8px;"></i>
+    </button>
   </div>
 </template>
 
@@ -79,6 +84,13 @@ export default {
       })
     },
     requestCrawl: function () {
+      if (!(0 in this.uIds && this.fId)) {
+        return this.$store.commit('showMessageModal', {
+          title: 'Blank Fields',
+          msg: 'Please fill in all fields for the search query.',
+          icon: 'exclamation triangle'
+        })
+      }
       this.$store.commit('setCrawlRequest', {
         uIds: this.uIds,
         fId: this.fId,
@@ -87,6 +99,9 @@ export default {
     },
     crawlMonitor: function () {
       this.$router.push('crawlMonitor')
+    },
+    logout: function () {
+      this.$router.push('/')
     }
   },
   computed: {
@@ -106,6 +121,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 .large.form {
@@ -120,5 +136,27 @@ export default {
 
 .circular.button {
   margin-left: 5px;
+}
+
+#login-indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  margin: 0px;
+  font-weight: normal;
+}
+
+#logout-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  border: 0px solid rgba(0, 0, 0, 0);
+  text-align: left;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  font-weight: bold;
+  height: 46px;
 }
 </style>

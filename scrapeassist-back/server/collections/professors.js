@@ -54,44 +54,14 @@ const professorSchema = new SimpleSchema({
   },
   relevantData: {
     type: Array,
-    defaultValue: []
+    // defaultValue: []
   },
-  'relevantURLs.$': {
+  'relevantData.$': {
     type: relevantDataSchema
   }
 })
 
 professors.attachSchema(professorSchema)
-
-if (!professors.find({}).count()) {
-  var Fiber = require('fibers')
-  var fileReader = require('readline').createInterface({
-    input: require('fs').createReadStream('assets/app/testdata.json')
-  })
-  fileReader.on('line', function (line) {
-    var data = JSON.parse(line)
-    Fiber(function () {
-      console.log('Importing data for Prof. ' + data.name)
-      var uid = universities.upsert({name: data.university}, {$set: {name: data.university, facultyIds: []}})
-      if (!uid.insertedId) {
-        uid = universities.findOne({name: data.university})._id
-      } else {
-        uid = uid.insertedId
-      }
-      var fid = faculties.upsert({name: data.faculty}, {$set: {name: data.faculty}})
-      if (!fid.insertedId) {
-        fid = faculties.findOne({name: data.faculty})._id
-      } else {
-        fid = fid.insertedId
-      }
-      data['facultyId'] = fid
-      data['universityId'] = uid
-      delete data.university
-      delete data.faculty
-      professors.insert(data)
-    }).run()
-  })
-}
 
 Meteor.methods({
   searchProfessors: function (uIds, fId) {

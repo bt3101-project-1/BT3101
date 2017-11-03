@@ -11,23 +11,23 @@ crawlrequests.deny({
 const crawlrequestSchema = new SimpleSchema({
   timeStampStart: {
     type: Date,
-    autoValue: function() {
-      if (!this.isUpdate) {
-        return new Date();
-      }
-    }
+    // autoValue: function() {
+    //   if (!this.isUpdate) {
+    //     return new Date();
+    //   }
+    // }
   },
   timeStampEnd: {
     type: Date,
-    autoValue: function () {
-      if (this.isUpdate) {
-        if (this.field('status').value.every(e => e)) {
-          return new Date();
-        } else {
-          this.unSet()
-        }
-      }
-    },
+    // autoValue: function () {
+    //   if (this.isUpdate) {
+    //     if (this.field('status').value.every(e => e)) {
+    //       return new Date();
+    //     } else {
+    //       this.unSet()
+    //     }
+    //   }
+    // },
     optional: true
   },
   status: {
@@ -59,7 +59,7 @@ crawlrequests.attachSchema(crawlrequestSchema);
 
 Meteor.methods({
   createCrawlRequest: function(fUrl, uId, fId) {
-    crawlrequests.insert({facultyUrl: fUrl, universityId: uId, facultyId: fId})
+    crawlrequests.insert({facultyUrl: fUrl, universityId: uId, facultyId: fId, timeStampStart: new Date()})
   },
   createCrawlRequests: function(fUrls, uIds, fId) {
     if (fUrls.length !== uIds.length) {
@@ -74,7 +74,7 @@ Meteor.methods({
       fId = faculties.insert({name: fId})
     }
     for (i in fUrls) {
-      crawlrequests.insert({facultyUrl: fUrls[i], universityId: uIds[i], facultyId: fId})
+      crawlrequests.insert({facultyUrl: fUrls[i], universityId: uIds[i], facultyId: fId, timeStampStart: new Date()})
     }
   }
 })

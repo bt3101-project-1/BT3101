@@ -20,18 +20,6 @@
             </a>
           </div>
         </div>
-        <div class="item">
-          <h5><i class="random icon"></i>SORT</h5>
-          <div class="menu">
-            <a class="item" @click="sortList('name')" :class="{active: k==='name'}">Name</a>
-            <a class="item" @click="sortList('university')" :class="{active: k==='university'}">Current Institution</a>
-            <a class="item" @click="sortList('rank')" :class="{active: k==='rank'}">Academic Rank</a>
-            <a class="item" @click="sortList('phdYear')" :class="{active: k==='phdYear'}">Year of PhD</a>
-            <a class="item" @click="sortList('phdInstitution')" :class="{active: k==='phdInstitution'}">PhD Instution</a>
-            <a class="item" @click="sortList('promotionYear')" :class="{active: k==='promotionYear'}">Year of Promotion</a>
-            <a class="item" @click="sortList('promotionInstitution')" :class="{active: k==='promotionInstitution'}">Promotion Institution</a>
-          </div>
-        </div>
         <div class="item" id="filters-menu">
           <h5><i class="filter icon"></i>FILTER</h5>
           <div class="ui icon input transparent">
@@ -63,6 +51,18 @@
           </div>
         </div>
         <div class="item">
+          <h5><i class="random icon"></i>SORT</h5>
+          <div class="menu">
+            <a class="item" @click="sortList('name')" :class="{active: k==='name'}">Name</a>
+            <a class="item" @click="sortList('university')" :class="{active: k==='university'}">Current Institution</a>
+            <a class="item" @click="sortList('rank')" :class="{active: k==='rank'}">Academic Rank</a>
+            <a class="item" @click="sortList('phdYear')" :class="{active: k==='phdYear'}">Year of PhD</a>
+            <a class="item" @click="sortList('phdInstitution')" :class="{active: k==='phdInstitution'}">PhD Instution</a>
+            <a class="item" @click="sortList('promotionYear')" :class="{active: k==='promotionYear'}">Year of Promotion</a>
+            <a class="item" @click="sortList('promotionInstitution')" :class="{active: k==='promotionInstitution'}">Promotion Institution</a>
+          </div>
+        </div>
+        <div class="item">
           <div id="view-menu">
             <div class="ui labeled icon menu">
               <a class="item" :class="{active: layout === 'dbList'}" @click="setLayout('dbList')">
@@ -85,6 +85,10 @@
       </div>
     </div>
     <div id="search-bar">
+      <button class="ui basic button" @click="back">
+        <i class="icon left chevron"></i>
+        Back
+      </button>
       <div class="university field">
         <uSelect :uIds="$store.state.uIds"></uSelect>
       </div>
@@ -191,6 +195,9 @@ export default {
     }
   },
   methods: {
+    back: function () {
+      this.$router.push('search')
+    },
     editProfessor: function (p) {
       this.pModalp = JSON.parse(JSON.stringify(p))
       this.pModal.modal('show')
@@ -259,10 +266,10 @@ export default {
     generateCSV: function () {
       var csvContent = 'data:text/csv;charset=utf-8,'
       var keys = ['universityId', 'facultyId', 'name', 'rank', 'phdYear', 'phdInstitution', 'promotionYear', 'promotionInstitution', 'researchInterests']
-      var headers = ['"University"', '"Faculty"', '"Name"', '"Academic Rank"', '"Year of Phd"', '"PhD Institution"', '"Research Interests"', '"Year of Promotion"', '"Promotion Institution"']
+      var headers = ['"University"', '"Faculty"', '"Name"', '"Academic Rank"', '"Year of Phd"', '"PhD Institution"', '"Year of Promotion"', '"Promotion Institution"', '"Research Interests"']
       csvContent += headers.join(',') + '\n'
-      for (var i in this.professors) {
-        var p = this.professors[i]
+      for (var i in this.csvProfessors) {
+        var p = this.csvProfessors[i]
         var dataString = ''
         keys.forEach(function (e) {
           if (e in p) {
@@ -286,7 +293,7 @@ export default {
       var encodedUri = encodeURI(csvContent)
       var link = document.createElement('a')
       link.setAttribute('href', encodedUri)
-      link.setAttribute('download', 'test.csv')
+      link.setAttribute('download', 'professors.csv')
       document.body.appendChild(link)
       link.click()
     }
@@ -338,6 +345,9 @@ export default {
       }.bind(this)
       return this.$store.state.dbSearchResults.sort(cmpFn(this.k)).filter(filterFn)
     },
+    csvProfessors: function () {
+      return this.professors.filter(e => this.selectedProfs.includes(e._id) || !(0 in this.selectedProfs))
+    },
     universities: function () {
       return this.$store.state.universities
     },
@@ -373,12 +383,13 @@ export default {
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-  position: relative;
+  position: absolute;
+  width: 100%;
 }
 
 #mouseover-zone {
   height: 700px;
-  width: 250px;
+  width: 200px;
   position: absolute;
   top: calc(50vh - 350px);
   left: 0;
@@ -444,8 +455,19 @@ export default {
   flex: 0 0 auto;
 }
 
+#search-bar button{
+  flex: 0 0 auto;
+  border: 0px solid rgba(0, 0, 0, 0);
+  text-align: left;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  font-weight: bold;
+  padding: 10px 10px;
+}
+
 .field.university {
   width: calc(75% - 10px);
+  margin-right: 10px;
 }
 
 .field.faculty {
