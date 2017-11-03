@@ -221,7 +221,6 @@ export default {
       })
     },
     loadSelection: function (slotId) {
-      console.log(this.saveslots[slotId])
       this.$store.dispatch('searchProfessors', {
         uIds: this.saveslots[slotId].universityIds,
         fId: this.saveslots[slotId].facultyId,
@@ -229,7 +228,6 @@ export default {
       })
       this.selectedProfs = this.saveslots[slotId].professorIds
       this.$forceUpdate()
-      console.log(this.$store.state.uIds)
     },
     setLayout: function (l) {
       this.layout = l
